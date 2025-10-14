@@ -1,0 +1,9 @@
+Options -MultiViews
+RewriteEngine On
+
+# Dosya veya dizin değilse...
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+
+# ...isteği index.php'ye yönlendir.
+RewriteRule ^ index.php [QSA,L]

@@ -1,0 +1,9 @@
+# Veritabanı dosyası
+/data/bilet_sistemi.db
+
+# Log dosyaları
+/logs/
+
+# IDE ayar klasörleri
+.vscode/
+.idea/
