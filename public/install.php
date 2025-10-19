@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST' || ($_POST['confirm_install'] ?? '') !
 }
 
 // --- KURULUM BAŞLANGICI ---
-require_once __DIR__ . '/config/config.php';
+require_once __DIR__ . '/../config/config.php';
 ?>
 <!DOCTYPE html>
 <html lang="tr">
