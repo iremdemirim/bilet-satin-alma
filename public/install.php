@@ -2,13 +2,18 @@
 /**
  * Veritabanı Kurulum Script'i
  * GÜVENLİK: Kurulum sonrası bu dosyayı MUTLAKA SİLİN!
+ * ÖNERİ: Bu dosyanın adını 'install.php' olarak değiştirebilirsiniz.
  */
 
-// --- GÜVENLİK KONTROLLERİ ---
+// --- DÜZELTME: DOCKER İÇİN IP KONTROLÜNÜ GEÇİCİ OLARAK YORUM SATIRI YAPTIK ---
+/*
 $allowedIPs = ['127.0.0.1', '::1', 'localhost'];
 if (!in_array($_SERVER['REMOTE_ADDR'] ?? '', $allowedIPs)) {
     die('Bu script sadece localhost üzerinden çalıştırılabilir.');
 }
+*/
+// --- DÜZELTME BİTTİ ---
+
 
 if (file_exists(__DIR__ . '/data/bilet_sistemi.db') && filesize(__DIR__ . '/data/bilet_sistemi.db') > 10240) {
     die('<h2>⚠️ HATA: Veritabanı Zaten Mevcut</h2><p>Güvenlik nedeniyle kurulum yeniden yapılamaz. Sıfırdan başlamak için <code>data/bilet_sistemi.db</code> dosyasını silin.</p>');
@@ -79,10 +84,11 @@ require_once __DIR__ . '/config/config.php';
 try {
     // 1. Data klasörünü oluştur
     echo "<div class='step'><strong>1. Data klasörü kontrol ediliyor...</strong><br>";
-    $dataDir = ROOT_PATH . '/data';
+    // ROOT_PATH zaten config.php'de tanımlı, __DIR__ yerine onu kullanmak daha tutarlı
+    $dataDir = ROOT_PATH . '/data'; 
     if (!is_dir($dataDir)) {
-        if (!mkdir($dataDir, 0755, true)) { // Recursive ekledik
-             throw new Exception("Data klasörü oluşturulamadı!");
+        if (!mkdir($dataDir, 0755, true)) { // Recursive true olmalı
+             throw new Exception("Data klasörü oluşturulamadı! İzinleri kontrol edin.");
         }
         echo "<span class='success'>✓ Data klasörü oluşturuldu</span><br>";
     } else {
@@ -92,20 +98,20 @@ try {
 
     // 2. Veritabanını ve tabloları oluştur
     echo "<div class='step'><strong>2. Veritabanı tabloları oluşturuluyor...</strong><br>";
-    $pdo = getDBConnection();
+    $pdo = getDBConnection(); // database.php'den bağlantıyı al
     $sqlFile = ROOT_PATH . '/sql/create_tables.sql';
     if (!file_exists($sqlFile)) {
         throw new Exception("SQL kurulum dosyası bulunamadı: " . $sqlFile);
     }
     $sql = file_get_contents($sqlFile);
-    // PDO::ERRMODE_EXCEPTION ayarlı olduğu için hata olursa exec exception fırlatır
     $pdo->exec($sql);
     echo "<span class='success'>✓ Veritabanı tabloları başarıyla oluşturuldu</span><br>";
     echo "</div>";
 
     // 3. İlk admin kullanıcısını ekle
     echo "<div class='step'><strong>3. Admin kullanıcısı oluşturuluyor...</strong><br>";
-    $db = Database::getInstance(); // Artık tablolar var, sınıfı kullanabiliriz
+    // Database sınıfını kullanmadan önce tabloların var olduğundan emin olduk
+    $db = Database::getInstance(); 
     $auth = new Auth();
     if ($db->getUserByEmail('admin@bilet.com')) {
         echo "<span class='warning'>⚠ Admin kullanıcısı zaten mevcut</span><br>";
@@ -129,11 +135,12 @@ try {
             ['name' => 'Pamukkale Turizm', 'logo' => '/assets/images/companies/pamukkale.png'],
             ['name' => 'Kamil Koç', 'logo' => '/assets/images/companies/kamilkoc.png']
         ];
+        // Firma logosu nullable olduğu için logo_path NULL olabilir.
         $sqlCompany = "INSERT INTO Bus_Company (id, name, logo_path) VALUES (?, ?, ?)";
-        $stmt = $pdo->prepare($sqlCompany); // Prepared statement kullanalım
+        $stmt = $pdo->prepare($sqlCompany); // Prepared statement
         foreach ($companies as $company) {
             $companyId = $db->generateUUID(); // UUID için sınıfı kullanalım
-            if (!$stmt->execute([$companyId, $company['name'], $company['logo']])) {
+            if (!$stmt->execute([$companyId, $company['name'], $company['logo'] ?? null])) {
                  throw new Exception("Firma eklenirken hata oluştu: " . $company['name']);
             }
         }
@@ -148,15 +155,13 @@ try {
     echo "<p><a href='/login' style='background: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;'>Giriş Yap</a></p>";
 
 } catch (Exception $e) {
-    // --- DÜZELTME: Hata mesajını ekrana yazdır ---
+    // Hata mesajını ekrana yazdır
     echo "<div class='error-box'>";
     echo "<h3>❌ Kurulum Hatası</h3>";
     echo "<p><strong>Hata Mesajı:</strong> " . htmlspecialchars($e->getMessage()) . "</p>";
     echo "<p>Lütfen hata mesajını kontrol edin, sorunu düzeltin ve tekrar deneyin.</p>";
-    // Hatanın hangi dosyada ve satırda olduğunu göster (geliştirme için faydalı)
     echo "<p><small>Dosya: " . $e->getFile() . " - Satır: " . $e->getLine() . "</small></p>";
     echo "</div>";
-    // --- DÜZELTME BİTTİ ---
 }
 ?>
 </body>
