@@ -6,20 +6,28 @@
 
 <div class="container container-narrow">
 
-    <?php // --- YENİ EKLENEN BÖLÜM BAŞLANGICI --- ?>
+    <?php // Ziyaretçi ise giriş/kayıt butonlarını göster ?>
     <?php if (!$auth->isLoggedIn()): ?>
         <div class="visitor-header">
             <a href="/login" class="btn btn-secondary">Giriş Yap</a>
             <a href="/register" class="btn btn-primary">Kayıt Ol</a>
         </div>
     <?php endif; ?>
-    <?php // --- YENİ EKLENEN BÖLÜM BİTİŞİ --- ?>
-    
-    <div class="card">
+
+    <div class="card mt-2"> <?php  ?>
         <div class="card-header">
             <h2>🚌 Nereye Gitmek İstersiniz?</h2>
         </div>
         <div class="card-body">
+
+            <?php // --- HATA MESAJI GÖSTERİM ALANI --- ?>
+            <?php if (!empty($error)): ?>
+                <div class="alert alert-error mb-3">
+                    <?= htmlspecialchars($error) ?>
+                </div>
+            <?php endif; ?>
+            <?php // --- HATA MESAJI GÖSTERİM ALANI BİTTİ --- ?>
+
             <form method="GET" action="/" class="search-form">
                 <div class="form-group">
                     <label for="departure_city">Kalkış Yeri</label>
@@ -55,7 +63,7 @@
         </div>
     </div>
 
-    <?php if ($isSearchPerformed): ?>
+    <?php if ($isSearchPerformed && empty($error)): ?>
         <div class="search-results mt-4">
             <h2>Arama Sonuçları</h2>
             <p class="text-secondary"><?= htmlspecialchars($departureCity) ?> → <?= htmlspecialchars($destinationCity) ?></p>
@@ -95,21 +103,26 @@
 </div>
 
 <style>
-    .trip-card { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; padding: var(--spacing-md); }
-    .trip-card-header { flex: 1; display: flex; align-items: center; gap: var(--spacing-md); min-width: 200px; }
+    .trip-card { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; padding: var(--spacing-md); margin-bottom: var(--spacing-md); } /* margin-bottom eklendi */
+    .trip-card-header { flex: 1; display: flex; align-items: center; gap: var(--spacing-md); min-width: 200px; margin-bottom: var(--spacing-sm); } /* margin-bottom eklendi */
     .company-logo { width: 40px; height: 40px; object-fit: contain; }
     .company-name { font-weight: 600; }
-    .trip-card-body { display: flex; gap: var(--spacing-xl); flex: 2; justify-content: center; flex-wrap: wrap; }
+    .trip-card-body { display: flex; gap: var(--spacing-lg); flex-wrap: wrap; flex: 2; justify-content: space-around; margin-bottom: var(--spacing-sm); } /* justify-content değiştirildi, gap küçültüldü, margin-bottom eklendi */
     .time-info { text-align: center; }
-    .price-info { font-size: 1.5rem; font-weight: 700; color: var(--primary-color); }
-    .trip-card-footer { flex: 1; text-align: right; min-width: 150px; }
+    .price-info { font-size: 1.5rem; font-weight: 700; color: var(--primary-color); margin-left: auto; padding-left: var(--spacing-md); } /* Otomatik sola yaslama için */
+    .trip-card-footer { flex-basis: 100%; text-align: right; margin-top: var(--spacing-sm); } /* Responsive tasarım için footer alta alındı */
 
-    /* --- YENİ EKLENEN CSS KURALI --- */
     .visitor-header {
         display: flex;
         justify-content: flex-end;
         gap: var(--spacing-md);
         padding-top: var(--spacing-lg);
         padding-bottom: var(--spacing-md);
+    }
+    /* Mobil görünüm için ek stil */
+     @media (max-width: 576px) {
+        .trip-card-body { justify-content: center; gap: var(--spacing-md); }
+        .price-info { margin-left: 0; padding-left: 0; width: 100%; text-align: center; margin-top: var(--spacing-sm); }
+        .trip-card-footer { text-align: center; }
     }
 </style>

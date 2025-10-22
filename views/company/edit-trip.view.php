@@ -32,7 +32,7 @@
                 <div class="grid grid-2">
                     <div class="form-group">
                         <label for="departure_date">Kalkış Tarihi *</label>
-                        <input type="date" id="departure_date" name="departure_date" value="<?= htmlspecialchars($inputs['departure_date']) ?>" required>
+                        <input type="date" id="departure_date" name="departure_date" value="<?= htmlspecialchars($inputs['departure_date']) ?>" min="<?= date('Y-m-d') ?>" max="<?= date('Y-m-d', strtotime('+1 year')) ?>" required>
                     </div>
                     <div class="form-group">
                         <label for="departure_time_input">Kalkış Saati *</label>
@@ -43,7 +43,7 @@
                 <div class="grid grid-2">
                     <div class="form-group">
                         <label for="arrival_date">Varış Tarihi *</label>
-                        <input type="date" id="arrival_date" name="arrival_date" value="<?= htmlspecialchars($inputs['arrival_date']) ?>" required>
+                        <input type="date" id="arrival_date" name="arrival_date" value="<?= htmlspecialchars($inputs['arrival_date']) ?>" min="<?= date('Y-m-d') ?>" max="<?= date('Y-m-d', strtotime('+1 year +1 day')) ?>" required>
                     </div>
                     <div class="form-group">
                         <label for="arrival_time_input">Varış Saati *</label>

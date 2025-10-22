@@ -51,6 +51,11 @@ if (!$trip) {
 $basePrice = count($checkoutData['seats']) * $trip['price'];
 $totalPrice = $basePrice - $checkoutData['discount'];
 
+// Uygulanmış kupon var mı kontrol et
+$appliedCouponCode = $checkoutData['coupon_code'] ?? null;
+// Uygulanabilir diğer kuponları veritabanından çek 
+$applicableCoupons = $db->getApplicableCoupons($trip['company_id'], $appliedCouponCode);
+
 $pageTitle = 'Ödeme - ' . SITE_NAME;
 require_once INCLUDES_PATH . '/header.php';
 require_once VIEWS_PATH . '/checkout.view.php';

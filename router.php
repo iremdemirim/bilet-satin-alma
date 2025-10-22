@@ -18,6 +18,7 @@ $routes = [
     '/checkout' => 'pages/checkout.php',
     '/process-payment' => 'pages/process-payment.php',
     '/apply-coupon' => 'pages/apply-coupon.php',
+    '/remove-coupon' => 'pages/remove-coupon.php',
     
     // Kimlik Doğrulama
     '/login' => 'pages/auth/login.php',

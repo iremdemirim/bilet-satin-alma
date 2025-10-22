@@ -36,7 +36,7 @@
 
                 <div class="form-group">
                     <label for="expire_date">Son Kullanma Tarihi *</label>
-                    <input type="date" id="expire_date" name="expire_date" value="<?= htmlspecialchars($inputs['expire_date']) ?>" min="<?= date('Y-m-d') ?>" required>
+                    <input type="date" id="expire_date" name="expire_date" value="<?= htmlspecialchars($inputs['expire_date']) ?>" min="<?= date('Y-m-d', strtotime('+1 year')) ?>" required>
                 </div>
 
                 <button type="submit" class="btn btn-primary mt-3">Değişiklikleri Kaydet</button>

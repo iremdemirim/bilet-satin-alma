@@ -321,8 +321,6 @@ class Database {
                 ORDER BY city ASC";
         
         $results = $this->fetchAll($sql);
-        
-        // Dizi'yi basitleştir: ['Ankara', 'İstanbul', 'İzmir']
         return array_column($results, 'city');
     }
 
@@ -332,5 +330,23 @@ class Database {
     public function getTripsByCompanyId($companyId) {
         $sql = "SELECT * FROM Trips WHERE company_id = ? ORDER BY departure_time DESC";
         return $this->fetchAll($sql, [$companyId]);
+    }
+
+    public function getApplicableCoupons($companyId, $excludeCode = null) {
+        $sql = "SELECT code, discount, company_id FROM Coupons
+                WHERE (company_id IS NULL OR company_id = ?) 
+                  AND expire_date >= date('now')             
+                  AND used_count < usage_limit             
+                  ";
+        $params = [$companyId];
+
+        if ($excludeCode) {
+            $sql .= " AND code != ?";
+            $params[] = $excludeCode;
+        }
+
+        $sql .= " ORDER BY company_id IS NULL DESC, discount DESC";
+
+        return $this->fetchAll($sql, $params);
     }
 }
