@@ -28,7 +28,7 @@ Bu projeyi yerel makinenizde çalıştırmak için iki yöntem bulunmaktadır. E
 2.  Proje dizinine gidin: `cd bilet-satin-alma`
 3.  Docker imajını oluşturun: `docker-compose build`
 4.  Konteyneri başlatın: `docker-compose up -d`
-5.  Tarayıcınızdan `http://localhost:8000/install.php` adresine gidin ve kurulum talimatlarını izleyin.
+5.  Tarayıcınızdan `http://localhost:8000/install.php` adresine gidin ve kurulum talimatlarını izleyin. Bu adımda hata alınabilir. Yine de `http://localhost:8000` adresine gidilip denenebilir.
 6.  **ÖNEMLİ:** Kurulumu tamamladıktan sonra güvenlik için `public/install.php` dosyasını silin.
 7.  Artık `http://localhost:8000` adresinden uygulamaya erişebilirsiniz.
 
